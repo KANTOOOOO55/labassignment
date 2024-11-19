@@ -87,8 +87,8 @@ class QueueSys {
     queue<Patient> urgentQueue;
     queue<Patient> normalQueue;
     vector<Patient> patientList;
-    vector<string> donePatients; // Tracks IDs of done patients
-    Patient* inService = nullptr; // Currently served patient
+    vector<string> donePatients;
+    Patient* inService = nullptr; 
 
 public:
     
@@ -276,7 +276,7 @@ int main()
 
     
 
-    int currentMinutes =8*60; // Start at 8:00 AM
+    int currentMinutes =8*60;
     cin.ignore();
 
     while (currentMinutes<24*60) 
@@ -287,7 +287,7 @@ int main()
 
         queueSystem.transferToQueues(currentMinutes);
 
-        int N = rand()%6+5; // Random number between 5 and 10
+        int N = rand()%6+5;
         queueSystem.servePatients(N);
 
         queueSystem.displayState();
