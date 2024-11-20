@@ -1,8 +1,3 @@
-
-    
-    
-    
-    
 #include <iostream>
 #include <queue>
 #include <vector>
@@ -88,7 +83,9 @@ class QueueSys {
     queue<Patient> normalQueue;
     vector<Patient> patientList;
     vector<string> donePatients;
-    Patient* inService = nullptr; 
+    Patient* inService = nullptr;
+    int totalWaitingTime = 0;
+    int totalServedPatients = 0;
 
 public:
     
@@ -132,52 +129,46 @@ public:
         }
     }
 
-void servePatients(int N) {
-        int served = 0;
+void servePatients(int N, int currentMinutes) {
+    int served = 0;
 
-        while (served < N) {
-            
-            if (!urgentQueue.empty()) {
-                if (inService) {
-                    donePatients.push_back(inService->getID());
-                    delete inService;
-                }
-
-                inService = new Patient(urgentQueue.front());
-                try{
-                if(urgentQueue.empty()){throw EmptyQueueExeption();}
-                }catch(const EmptyQueueExeption& e){
-                    cout<<"No Urgent Patients "<<endl;
-                    
-                }
-                urgentQueue.pop();
-                served++;
-            } else if (!normalQueue.empty()) {
-                if (inService) {
-                    donePatients.push_back(inService->getID());
-                    delete inService;
-                }
-
-                inService = new Patient(normalQueue.front());
-                try{if(normalQueue.empty()){throw EmptyQueueExeption();}}
-                
-                catch(const EmptyQueueExeption& e){
-                    cout<<"No Normal Patients "<<endl;
-                    
-                }
-                normalQueue.pop();
-                served++;
-            } else {
-                break;
+    while (served < N) {
+        if (!urgentQueue.empty()) {
+            if (inService) {
+                donePatients.push_back(inService->getID());
+                delete inService;
             }
-        }
 
-        if (served == 0 && inService) {
-            donePatients.push_back(inService->getID());
-            delete inService;
-            inService = nullptr;
+            inService = new Patient(urgentQueue.front());
+            totalWaitingTime += (currentMinutes - inService->getArrivalTimeInMinutes());
+            totalServedPatients++;
+
+            urgentQueue.pop();
+            served++;
+        } else if (!normalQueue.empty()) {
+            if (inService) {
+                donePatients.push_back(inService->getID());
+                delete inService;
+            }
+
+            inService = new Patient(normalQueue.front());
+            totalWaitingTime += (currentMinutes - inService->getArrivalTimeInMinutes());
+            totalServedPatients++;
+
+            normalQueue.pop();
+            served++;
+        } else {
+            break;
         }
     }
+
+    if (served == 0 && inService) {
+        donePatients.push_back(inService->getID());
+        delete inService;
+        inService = nullptr;
+    }
+}
+
     void displayState() const 
     {
         int N = rand()%6+5;
@@ -188,8 +179,8 @@ void servePatients(int N) {
         
         while (!tempUrgent.empty()) 
         {
-            try{if(tempUrgent.empty()){throw EmptyQueueExeption();}}
-            catch(const EmptyQueueExeption& e){
+            try{if(tempUrgent.empty()){throw EmptyQueueExeption();}}   //exception handling
+            catch(const EmptyQueueExeption& e){                        // exception handling
                     cout<<"No Urgent Patients to Display "<<endl;
                     
                 }
@@ -207,8 +198,8 @@ void servePatients(int N) {
         
         while (!tempNormal.empty()) 
         {
-            try{if(tempNormal.empty()){throw EmptyQueueExeption();}}
-             catch(const EmptyQueueExeption& e){
+            try{if(tempNormal.empty()){throw EmptyQueueExeption();}}   //exception handling
+             catch(const EmptyQueueExeption& e){                       // exception handling
                     cout<<"No Normal Patients to Display "<<endl;
                     
                 }
@@ -240,6 +231,15 @@ void servePatients(int N) {
          cout<< "Total number of Done Patients is : "<<counter<<endl;
         cout <<endl;
     }
+    void displayAverageWaitingTime() const {
+    if (totalServedPatients > 0) {
+        double averageWaitingTime = static_cast<double>(totalWaitingTime) / totalServedPatients;
+        cout << "Average Waiting Time: " << averageWaitingTime << " minutes." << endl;
+    } else {
+        cout << "No patients have been served yet." << endl;
+    }
+}
+
 };
 
 int main() 
@@ -276,7 +276,7 @@ int main()
 
     
 
-    int currentMinutes =8*60;
+    int currentMinutes =8*60; // initial time is  8:00 AM
     cin.ignore();
 
     while (currentMinutes<24*60) 
@@ -287,10 +287,12 @@ int main()
 
         queueSystem.transferToQueues(currentMinutes);
 
-        int N = rand()%6+5;
-        queueSystem.servePatients(N);
+        int N = rand()%6+5; // generating random number between 5 and 10 as required
+        queueSystem.servePatients(N,currentMinutes);
 
         queueSystem.displayState();
+
+        queueSystem.displayAverageWaitingTime();
 
         cout << "Press Enter to advance 1 minute...";
         cin.get();
