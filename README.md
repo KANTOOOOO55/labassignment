@@ -63,12 +63,10 @@ Done Patient IDs:
 285075150316
 285021569821
 Total number of Done Patients is : 7
-
-Average Waiting Time: 171.75 minutes.
 Press Enter to advance 1 minute...
 
 
-The code simulates a hospital queue system where patients are categorized as "Urgent" or "Normal" based on their condition and processed accordingly. The output represents the current state of the simulation. At the given time (08:00 AM), 100 patients have been generated, and their IDs are displayed in separate queues for "Urgent" and "Normal" patients. The number of patients in each queue is shown, along with details of the patient currently being served ("In-Service Patient"). Additionally, IDs of patients already processed ("Done Patients") are listed, and the system calculates the average waiting time for all served patients. This output reflects the dynamic state of the queues and patient processing as the simulation progresses minute by minute.
+The code simulates a hospital queue system where patients are categorized as "Urgent" or "Normal" based on their condition and processed accordingly. The output represents the current state of the simulation. At the given time (08:00 AM), 100 patients have been generated, and their IDs are displayed in separate queues for "Urgent" and "Normal" patients. The number of patients in each queue is shown, along with details of the patient currently being served ("In-Service Patient"). Additionally, IDs of patients already processed ("Done Patients") are listed. This output reflects the dynamic state of the queues and patient processing as the simulation progresses minute by minute.
 
 
 
